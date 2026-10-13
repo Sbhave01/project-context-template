@@ -1,0 +1,17 @@
+# Replace @usernames with your team's GitHub handles.
+# With branch protection "Require review from Code Owners", these people must approve changes.
+
+# Project state and direction: owner approves
+/memory/MEMORY.md        @{{OWNER}}
+/memory/NORTH_STAR.md    @{{OWNER}}
+/memory/ROSTER.md        @{{OWNER}}
+
+# Commercial decisions: owner approves. Other areas: any teammate can approve.
+# (CODEOWNERS can't match on file contents, so commercial decisions are checked in review.)
+/memory/decisions/       @{{OWNER}}
+
+# Repo machinery
+/.claude/                @{{OWNER}}
+/.github/                @{{OWNER}}
+/scripts/                @{{OWNER}}
+/CLAUDE.md               @{{OWNER}}

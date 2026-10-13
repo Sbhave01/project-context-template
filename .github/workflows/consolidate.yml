@@ -1,0 +1,37 @@
+name: Consolidate memory
+
+# Weekly: Monday 8:00 Brisbane (Sunday 22:00 UTC). Also runnable by hand from the Actions tab.
+on:
+  schedule:
+    - cron: "0 22 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Skip if inbox is empty
+        id: check
+        run: |
+          n=$(ls memory/inbox/*.md 2>/dev/null | grep -v _TEMPLATE | wc -l)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Run consolidation with Claude
+        if: steps.check.outputs.count != '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Follow .claude/skills/consolidate/SKILL.md exactly.
+            Today's date: use `date +%F`.
+            Open the pull request; do not merge it.
+          claude_args: "--allowedTools Bash,Read,Write,Edit,Glob,Grep"
